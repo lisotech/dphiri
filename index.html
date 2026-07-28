@@ -606,8 +606,9 @@
                     <input type="text" id="trackArtistInput" value="Man Vid" required>
                 </div>
                 <div class="form-group">
-                    <label for="trackAudioFile">Audio File (.mp3)</label>
+                    <label for="trackAudioFile">Audio File (.mp3, Max: 10MB)</label>
                     <input type="file" id="trackAudioFile" accept="audio/*" required>
+                    <div class="error-msg" id="audioError" style="display: none;">File size exceeds 10MB limit!</div>
                 </div>
                 <div class="form-group">
                     <label for="trackArtFile">Artwork Image (Optional)</label>
@@ -759,6 +760,7 @@
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('uploadModal').style.display = 'none';
             document.getElementById('loginError').style.display = 'none';
+            document.getElementById('audioError').style.display = 'none';
         }
 
         function handleLogin(e) {
@@ -791,8 +793,18 @@
             const artistInput = document.getElementById('trackArtistInput');
             const audioFile = document.getElementById('trackAudioFile').files[0];
             const artFile = document.getElementById('trackArtFile').files[0];
+            const audioError = document.getElementById('audioError');
 
             if (!audioFile) return;
+
+            // 10MB limit validation (10 * 1024 * 1024 bytes)
+            const maxSize = 10 * 1024 * 1024;
+            if (audioFile.size > maxSize) {
+                audioError.style.display = 'block';
+                return;
+            } else {
+                audioError.style.display = 'none';
+            }
 
             submitBtn.textContent = 'Processing...';
             submitBtn.disabled = true;
